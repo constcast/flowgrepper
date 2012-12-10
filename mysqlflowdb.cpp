@@ -1,4 +1,7 @@
+#ifdef MYSQL_SUPPORT
+
 #include "mysqlflowdb.h"
+
 
 #include <stdexcept>
 #include <iostream>
@@ -135,3 +138,4 @@ Flow* MySQLFlowDB::getNextFlow()
 	return getNextFlow();
 }
 
+#endif
