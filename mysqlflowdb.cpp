@@ -9,7 +9,7 @@
 #include "flow.h"
 
 MySQLFlowDB::MySQLFlowDB(const std::string& host, const uint16_t port, const std::string& username, const std::string& password)
-	: FlowDBBase(host, port, username, password), conn(NULL), dbResult(NULL), currentTableIndex(0)
+	: FlowDBBase(host, port, username, password), conn(NULL), dbResult(NULL)
 {
 
 }
