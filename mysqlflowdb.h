@@ -1,6 +1,8 @@
 #ifndef _FLOWGREPPER_MYSQL_FLOW_DB_H_
 #define _FLOWGREPPER_MYSQL_FLOW_DB_H_
 
+#ifdef MYSQL_SUPPORT
+
 #include "flowdb.h"
 
 #include <string>
@@ -16,17 +18,16 @@ public:
 
 	virtual Flow* getNextFlow();
 	virtual void connect(const std::string& databaseName);
-	virtual Flow* createFlowFromRow(char** dbRow);
+	virtual void getTableNames();
 
 private: 
 	void fillColumns(const std::string& tableName);
+	Flow* createFlowFromRow(char** dbRow);
 
 	MYSQL* conn;
 	MYSQL_RES* dbResult;
-	std::vector<std::string> tables;
-	std::vector<std::string> columns;
-	std::string columnNames;
-	size_t currentTableIndex; 
 };
+
+#endif
 
 #endif
