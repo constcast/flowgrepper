@@ -3,16 +3,18 @@
 
 class Flow;
 class ReporterBase;
+class ConfigObject;
 
 class AnalyzerBase
 {
 public:
-	AnalyzerBase(ReporterBase* reporter);
+	AnalyzerBase(const ConfigObject& configObject, ReporterBase& reporter);
 	
 	virtual void analyzeFlow(const Flow* flow) = 0;
 	virtual	void passResults() = 0;
 protected:
-	ReporterBase* reporter;
+	const ConfigObject& configObject;
+	ReporterBase& reporter;
 };
 
 #endif

@@ -9,7 +9,7 @@
 class OneWayFlowAnalyzer : public AnalyzerBase
 {
 public:
-	OneWayFlowAnalyzer(ReporterBase* reporter);
+	OneWayFlowAnalyzer(const ConfigObject& configObject, ReporterBase& reporter);
 	
 	virtual void analyzeFlow(const Flow* flow);
 	virtual	void passResults();

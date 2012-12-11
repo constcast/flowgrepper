@@ -6,6 +6,7 @@ SET(CMAKE_MODULE_PATH ${CMAKE_ROOT}/Modules ${CMAKE_SOURCE_DIR}/cmake/modules)
 
 ADD_EXECUTABLE(flowgrepper
 	flowgrepper.cpp
+	configobject.cpp
 	mysqlflowdb.cpp
 	flowdb.cpp
 	flow.cpp

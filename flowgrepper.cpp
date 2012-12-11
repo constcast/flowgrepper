@@ -1,6 +1,12 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
+#include <iterator>
+#include <algorithm>
+#include <map>
+#include <stdexcept>
+#include <vector>
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -8,19 +14,28 @@
 
 #include "flowdb.h"
 #include "flow.h"
+#include "configobject.h"
 
 #include "onewayflowanalyzer.h"
 
 #include "reporterprinter.h"
 
+AnalyzerBase* createAnalyzer(const std::string& name, const ConfigObject& configObject,  ReporterBase& reporter)
+{
+	if (name == "onewayflowanalyzer") {
+		return new OneWayFlowAnalyzer(configObject, reporter);
+	} else {
+		throw std::runtime_error("Error in createAnalyzer: Unknown analyzer module \"" + name + "\"!");
+	}
+
+	// we should never get here. this is just to make the compiler happy
+	return NULL;
+}
+
 void usage(const std::string filename)
 {
 	std::cerr << "Usage: " << filename << "-f file" << std::endl;
 }
-
-
-
-
 
 int main(int argc, char** argv)
 {
@@ -48,77 +63,53 @@ int main(int argc, char** argv)
                 return -1;
         }
 
-	// parse config
-	std::ifstream configStream;
-	configStream.open(config_file.c_str());
-	/* expected format: 
-		<dbtype>
-		<host-ip>
-		<host-port>
-		<username>
-		<password>
-	*/
-	std::string  line;
+
+	ConfigObject confObject(config_file);
 	std::string dbtype, hostIP, username, password, databaseName;
 	uint16_t hostPort;
 
-	if (!std::getline(configStream, line)) {
-		std::cerr << "could not read dbtype from " << config_file << std::endl;
-		return -1;
-	}
-	dbtype = line;
+	dbtype = confObject.getConfString("", "dbtype");
+	hostIP = confObject.getConfString("", "host");
+	hostPort = atoi(confObject.getConfString("", "port").c_str());
+	username = confObject.getConfString("", "username");
+	password = confObject.getConfString("", "password");
+	databaseName = confObject.getConfString("", "database");
 
-	if (!std::getline(configStream, line)) {
-		std::cerr << "could not read host from " << config_file << std::endl;
-		return -1;
-	}
-	hostIP = line;
+	// read and initialize modules
+	std::string moduleString = confObject.getConfString("", "modules");
 
-	if (!std::getline(configStream, line)) {
-		std::cerr << "could not read port from " << config_file << std::endl;
-		return -1;
-	}
-	hostPort = atoi(line.c_str());
-	
-	if (!std::getline(configStream, line)) {
-		std::cerr << "could not read username from " << config_file << std::endl;
-		return -1;
-	}
-	username = line;
-
-	if (!std::getline(configStream, line)) {
-		std::cerr << "could not read password from " << config_file << std::endl;
-		return -1;
-	}
-	password = line;
-
-	if (!std::getline(configStream, line)) {
-		std::cerr << "could not read database name from " << config_file << std::endl;
-		return -1;
-	}
-	databaseName = line;
-
-
-	FlowDBBase* flowdb = createFlowDB(dbtype, hostIP, hostPort, username, password);
+	std::istringstream iss(moduleString);
+	std::vector<std::string> modules;
+	std::copy(std::istream_iterator<std::string>(iss),
+			std::istream_iterator<std::string>(),
+			std::back_inserter<std::vector<std::string> >(modules));
 
 	ReporterBase* reporter = new ReporterPrinter();
-	OneWayFlowAnalyzer* oneway = new OneWayFlowAnalyzer(reporter);
+	std::vector<AnalyzerBase*> analyzers;
+	for (size_t i = 0; i != modules.size(); ++i) {
+		analyzers.push_back(createAnalyzer(modules[i], confObject, *reporter));
+	}
+
+	FlowDBBase* flowdb = createFlowDB(dbtype, hostIP, hostPort, username, password);
 
 	flowdb->connect(databaseName);
 	Flow* flow;
 	size_t counter = 0;
 	while ((flow = flowdb->getNextFlow())) {
-		oneway->analyzeFlow(flow);
+		for (size_t i = 0; i != analyzers.size(); ++i) {
+			analyzers[i]->analyzeFlow(flow);
+		}
 		delete flow;
 		counter++;
 		//if (counter == 100)
 		//	break;
 	}
 	std::cout << "Finished reading flows from db! Reporting!" << std::endl;
-	oneway->passResults();
+	for (size_t i = 0; i != analyzers.size(); ++i) {
+		analyzers[i]->passResults();
+		delete analyzers[i];
+	}
 
-
-	delete oneway;
 	delete reporter;
 	delete flowdb;
 

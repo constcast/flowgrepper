@@ -11,8 +11,8 @@
 #include "reporterbase.h"
 
 
-OneWayFlowAnalyzer::OneWayFlowAnalyzer(ReporterBase* reporter)
-	: AnalyzerBase(reporter)
+OneWayFlowAnalyzer::OneWayFlowAnalyzer(const ConfigObject& configObject, ReporterBase& reporter)
+	: AnalyzerBase(configObject, reporter)
 {
 
 }
@@ -56,7 +56,7 @@ void OneWayFlowAnalyzer::passResults()
 		struct in_addr addr;
 		addr.s_addr = htonl(i->first);
 		sstream << "IP:\t" << inet_ntoa(addr) << "\t\t" << i->second.biflows << "\t" << i->second.oneWayTarget << "\t" << i->second.oneWaySource;
-		reporter->addLogString(sstream.str());
+		reporter.addLogString(sstream.str());
 	}
 }
 

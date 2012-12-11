@@ -1,7 +1,7 @@
 #include "analyzerbase.h"
 
-AnalyzerBase::AnalyzerBase(ReporterBase* report)
-	: reporter(report)
+AnalyzerBase::AnalyzerBase(const ConfigObject& confObject, ReporterBase& report)
+	: configObject(confObject), reporter(report)
 {
 
 }
