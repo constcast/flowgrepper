@@ -18,6 +18,7 @@ public:
 
 	virtual Flow* getNextFlow();
 	virtual void connect(const std::string& databaseName);
+	virtual void getTableNames();
 
 private: 
 	void fillColumns(const std::string& tableName);
@@ -29,10 +30,6 @@ private:
 	oracle::occi::Statement *statement;
 	oracle::occi::ResultSet *resultSet;
 	
-	std::vector<std::string> tables;
-	std::vector<std::string> columns;
-	std::string columnNames;
-	size_t currentTableIndex; 
 };
 
 #endif

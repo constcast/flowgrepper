@@ -10,7 +10,7 @@
 #include "flow.h"
 
 OracleFlowDB::OracleFlowDB(const std::string& host, const uint16_t port, const std::string& username, const std::string& password)
-	: FlowDBBase(host, port, username, password), conn(NULL), env(NULL), statement(NULL), resultSet(NULL), currentTableIndex(0)
+	: FlowDBBase(host, port, username, password), conn(NULL), env(NULL), statement(NULL), resultSet(NULL)
 {
 
 }
@@ -35,7 +35,10 @@ void OracleFlowDB::connect(const std::string& databaseName)
 	} catch (oracle::occi::SQLException& ex) {
 		throw std::runtime_error("ERROR connecting to Oracle DB while creating connection: " + ex.getMessage());
 	}
+}
 
+void OracleFlowDB::getTableNames()
+{
 	// get tables in database
         const char* wild = "'F!_\%' ESCAPE '!'";
 	std::ostringstream sql;
@@ -59,7 +62,7 @@ void OracleFlowDB::connect(const std::string& databaseName)
 	}
 
 	if (!tableRS) {
-		throw std::runtime_error("Error: no tables in oracle DB " + databaseName);
+		throw std::runtime_error("Error: no tables in oracle DB ");
 	}
 
 	try {
@@ -85,9 +88,9 @@ Flow* OracleFlowDB::createFlowFromRow()
 	Flow* result = new Flow();
 
 	// oracle starts counting at 1
-	for (size_t i = 1; i > columns.size(); ++i) {
+	for (size_t i = 0; i != columns.size(); ++i) {
 		//std::cout << "\t" <<  columns[i] << ": " << dbRow[i] << std::endl ;
-		result->setValue(columns[i], resultSet->getString(i).c_str());
+		result->setValue(columns[i], resultSet->getString(i + 1).c_str());
 	}
 	//std::cout << std::endl << "-------" << std::endl;
 
@@ -175,6 +178,7 @@ Flow* OracleFlowDB::getNextFlow()
 	}
 
 	try {
+		statement->setPrefetchRowCount(1000000);
 		resultSet = statement->executeQuery();
 	} catch (oracle::occi::SQLException& ex) {
 		conn->terminateStatement(statement);

@@ -36,7 +36,11 @@ void MySQLFlowDB::connect(const std::string& databaseName)
         } else {
 		std::cout << "Successfully selected database " << databaseName << std::endl;
         }
+}
 
+
+void MySQLFlowDB::getTableNames()
+{
 	// get tables in database
         const char* wild = "f\\_%";
 	MYSQL_RES* dbTableResult = NULL;
@@ -44,7 +48,7 @@ void MySQLFlowDB::connect(const std::string& databaseName)
 	
 	dbTableResult = mysql_list_tables(conn, wild);
 	if(dbTableResult == 0) {
-		throw std::runtime_error("Database " + databaseName + " does not contain any tables!");
+		throw std::runtime_error("Database does not contain any tables!");
 	} else {
 		while((dbRow = mysql_fetch_row(dbTableResult))) {
 			tables.push_back(std::string(dbRow[0]));

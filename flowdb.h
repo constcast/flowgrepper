@@ -3,8 +3,9 @@
 
 #include <string>
 #include <stdint.h>
+#include <vector>
 
-class Flow;
+#include "flow.h"
 
 class FlowDBBase 
 {
@@ -13,13 +14,20 @@ public:
 
 	virtual Flow* getNextFlow() = 0;
 	virtual void connect(const std::string& database_name) = 0;
+	virtual void getTableNames() = 0;
+
+	virtual void limitTableSpace(const std::vector<std::string>& tableNames);
 
 protected:
 	std::string host;
 	uint16_t port;
 	std::string username;
 	std::string password;
-	
+
+	std::vector<std::string> tables;
+	std::vector<std::string> columns;
+	std::string columnNames;
+	size_t currentTableIndex; 
 };
 
 
