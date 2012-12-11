@@ -22,6 +22,7 @@ public:
 
 private:
 	std::map<uint32_t, FlowCounters> counters;
+	std::map<uint64_t, uint32_t> unsucessfulPairs;
 };
 
 #endif

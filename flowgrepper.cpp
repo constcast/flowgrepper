@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <vector>
 
 #include "flowdb.h"
 #include "flow.h"
@@ -15,16 +16,13 @@
 
 void usage(const std::string filename)
 {
-	std::cerr << "Usage: " << filename << "-f file" << std::endl;
+	std::cerr << "Usage: " << filename << "-f file [tablename, tablename ...]" << std::endl;
 }
-
-
-
-
 
 int main(int argc, char** argv)
 {
 	std::string config_file;
+	std::vector<std::string> tableNames;
 	int c;
         /* parse command line */
         while ((c=getopt(argc, argv, "hf:d")) != -1) {
@@ -47,6 +45,10 @@ int main(int argc, char** argv)
                 usage(argv[0]);
                 return -1;
         }
+
+	for (int index = optind; index < argc; ++index) {
+		tableNames.push_back(argv[index]);
+	}
 
 	// parse config
 	std::ifstream configStream;
@@ -105,14 +107,26 @@ int main(int argc, char** argv)
 	OneWayFlowAnalyzer* oneway = new OneWayFlowAnalyzer(reporter);
 
 	flowdb->connect(databaseName);
+	flowdb->getTableNames();
+	if (tableNames.size() > 0) {
+		std::cout << "Filtering Tables ..." << std::endl;
+		flowdb->limitTableSpace(tableNames);
+	} else {
+		std::cout << "Analyzing all tables ..." << std::endl;
+	}
+
 	Flow* flow;
 	size_t counter = 0;
 	while ((flow = flowdb->getNextFlow())) {
+		if (counter == 0) {
+			std::cout << "Received first flow from db ..." << std::endl;
+		}
 		oneway->analyzeFlow(flow);
 		delete flow;
 		counter++;
-		//if (counter == 100)
-		//	break;
+		if (counter % 100000 == 0) {
+			std::cout << "Analyzed " << counter << " flows ..." << std::endl;
+		}
 	}
 	std::cout << "Finished reading flows from db! Reporting!" << std::endl;
 	oneway->passResults();

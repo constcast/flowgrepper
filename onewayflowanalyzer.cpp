@@ -45,6 +45,10 @@ void OneWayFlowAnalyzer::analyzeFlow(const Flow* flow)
 	} else {
 		dstCounters->oneWayTarget++;
 	}
+
+	//uint32_t smaller = flow->srcIP<flow->dstIP?flow->srcIP:flow->dstIP;
+	//uint32_t bigger = flow->srcIP>flow->dstIP?flow->dstIP:flow->srcIP;
+	//uint64_t pair 2
 }
 
 
@@ -55,7 +59,7 @@ void OneWayFlowAnalyzer::passResults()
 		std::stringstream sstream;
 		struct in_addr addr;
 		addr.s_addr = htonl(i->first);
-		sstream << "IP:\t" << inet_ntoa(addr) << "\t\t" << i->second.biflows << "\t" << i->second.oneWayTarget << "\t" << i->second.oneWaySource;
+		sstream << "IP:\t" << i->first << "\t" << inet_ntoa(addr) << "\t\t" << i->second.biflows << "\t" << i->second.oneWayTarget << "\t" << i->second.oneWaySource;
 		reporter->addLogString(sstream.str());
 	}
 }
