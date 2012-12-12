@@ -9,6 +9,7 @@ ADD_EXECUTABLE(flowgrepper
 	configobject.cpp
 	flow.cpp
 	iniparser.c
+	
 
 	flowdb.cpp
 	oracleflowdb.cpp
@@ -20,6 +21,7 @@ ADD_EXECUTABLE(flowgrepper
 
 	reporterbase.cpp
 	reporterprinter.cpp
+	longest-prefix/tree.c
 )
 
 ADD_DEFINITIONS(-O0 -g -pg -Wall -DDEBUG)

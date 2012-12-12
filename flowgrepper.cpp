@@ -18,6 +18,7 @@
 #include "configobject.h"
 
 #include "onewayflowanalyzer.h"
+#include "rrdvis.h"
 
 #include "reporterprinter.h"
 
@@ -25,6 +26,8 @@ AnalyzerBase* createAnalyzer(const std::string& name, const ConfigObject& config
 {
 	if (name == "onewayflowanalyzer") {
 		return new OneWayFlowAnalyzer(configObject, reporter);
+	} else if (name == "rrdvisualizer") {
+		return new RRDVisAnalyzer(configObject, reporter);
 	} else {
 		throw std::runtime_error("Error in createAnalyzer: Unknown analyzer module \"" + name + "\"!");
 	}
@@ -73,15 +76,15 @@ int main(int argc, char** argv)
 	std::string dbtype, hostIP, username, password, databaseName;
 	uint16_t hostPort;
 
-	dbtype = confObject.getConfString("", "dbtype");
-	hostIP = confObject.getConfString("", "host");
-	hostPort = atoi(confObject.getConfString("", "port").c_str());
-	username = confObject.getConfString("", "username");
-	password = confObject.getConfString("", "password");
-	databaseName = confObject.getConfString("", "database");
+	dbtype       = confObject.getConfString("main", "dbtype");
+	hostIP       = confObject.getConfString("main", "host");
+	hostPort     = atoi(confObject.getConfString("main", "port").c_str());
+	username     = confObject.getConfString("main", "username");
+	password     = confObject.getConfString("main", "password");
+	databaseName = confObject.getConfString("main", "database");
 
 	// read and initialize modules
-	std::string moduleString = confObject.getConfString("", "modules");
+	std::string moduleString = confObject.getConfString("main", "modules");
 
 	std::istringstream iss(moduleString);
 	std::vector<std::string> modules;
