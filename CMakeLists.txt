@@ -8,6 +8,7 @@ ADD_EXECUTABLE(flowgrepper
 	flowgrepper.cpp
 	configobject.cpp
 	flow.cpp
+	iniparser.c
 
 	flowdb.cpp
 	oracleflowdb.cpp
@@ -15,6 +16,7 @@ ADD_EXECUTABLE(flowgrepper
 
 	analyzerbase.cpp
 	onewayflowanalyzer.cpp
+	rrdvis.cpp
 
 	reporterbase.cpp
 	reporterprinter.cpp

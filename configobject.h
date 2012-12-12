@@ -4,13 +4,16 @@
 #include <string>
 #include <map>
 
+#include "iniparser.h"
+
 class ConfigObject
 {
 public:
 	ConfigObject(const std::string& file);
+	~ConfigObject();
 	virtual std::string getConfString(const std::string& section, const std::string& key) const;
-protected:
-	std::map<std::string, std::string> confStrings;	
+private:
+	dictionary* d;
 };
 
 #endif

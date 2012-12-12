@@ -8,29 +8,19 @@
 
 ConfigObject::ConfigObject(const std::string& filename)
 {
-	// parse config
-	std::ifstream configStream;
-	configStream.open(filename.c_str());
-	std::string  line;
-
-	while (std::getline(configStream, line)) {
-		size_t found = line.find("=");
-		if (found == std::string::npos) {
-			// no = in stringk
-			throw std::runtime_error("Config Error: Could not find = in config string \"" + line + "\"");
-		}
-		std::string key = line.substr(0, found);
-		std::string value = line.substr(found + 1, line.size());
-		std::cout << key << " " << value << std::endl;
-		confStrings[key] = value;
+	d = iniparser_new(filename.c_str());
+	if (!d) {
+		throw std::runtime_error("ConfigObject: Could not parse config file " + filename + "!");
 	}
+}
+
+ConfigObject::~ConfigObject()
+{
+	iniparser_free(d);
 }
 
 std::string ConfigObject::getConfString(const std::string& section, const std::string& key) const
 {
-	if (confStrings.find(key) == confStrings.end()) {
-		throw std::runtime_error("Config Error: Could not find \"" + key + "\" in config file");
-	}
-	return confStrings.find(key)->second;
+	return iniparser_getvalue(d, section.c_str(), key.c_str());
 }
 
