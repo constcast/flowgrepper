@@ -25,6 +25,8 @@ public:
 	uint64_t revFlowEnd; 
 	uint64_t revPackets; 
 	uint64_t revBytes;
+
+	bool firstOfNewTable;
 };
 
 #endif

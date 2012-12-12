@@ -116,6 +116,9 @@ int main(int argc, char** argv)
 			std::cout << "Received first flow from db ..." << std::endl;
 		}
 		for (size_t i = 0; i != analyzers.size(); ++i) {
+			if (flow->firstOfNewTable) {
+				analyzers[i]->nextTable();
+			}
 			analyzers[i]->analyzeFlow(flow);
 		}
 		delete flow;

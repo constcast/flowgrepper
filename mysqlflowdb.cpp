@@ -9,7 +9,7 @@
 #include "flow.h"
 
 MySQLFlowDB::MySQLFlowDB(const std::string& host, const uint16_t port, const std::string& username, const std::string& password)
-	: FlowDBBase(host, port, username, password), conn(NULL), dbResult(NULL)
+	: FlowDBBase(host, port, username, password), conn(NULL), dbResult(NULL), firstOfTable(true)
 {
 
 }
@@ -68,6 +68,12 @@ Flow* MySQLFlowDB::createFlowFromRow(char** dbRow)
 		result->setValue(columns[i], dbRow[i]);
 	}
 	//std::cout << std::endl << "-------" << std::endl;
+	if (firstOfTable) {
+		result->firstOfNewTable = true;
+		firstOfTable = false;
+	} else {
+		result->firstOfNewTable = false;
+	}
 
 	return result;
 	
@@ -127,6 +133,8 @@ Flow* MySQLFlowDB::getNextFlow()
 	std::cout << tables[currentTableIndex] << std::endl;
         std::string query = "SELECT " + columnNames + " FROM " + tables[currentTableIndex] + " ORDER BY flowStartMilliSeconds";
 	std::cout << query << std::endl;
+
+	firstOfTable = true;
 
         if(mysql_query(conn, query.c_str()) != 0) {
                 throw std::runtime_error("Error running query on table " + tables[currentTableIndex] + ": " +  std::string(mysql_error(conn)));

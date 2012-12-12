@@ -26,6 +26,7 @@ private:
 
 	MYSQL* conn;
 	MYSQL_RES* dbResult;
+	bool firstOfTable;
 };
 
 #endif

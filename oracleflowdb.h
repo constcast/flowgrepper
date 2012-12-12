@@ -30,6 +30,7 @@ private:
 	oracle::occi::Statement *statement;
 	oracle::occi::ResultSet *resultSet;
 	
+	bool firstOfTable;
 };
 
 #endif
