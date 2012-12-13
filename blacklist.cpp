@@ -100,7 +100,7 @@ int Blacklist::IsIn(uint32_t ip){
 			if(result == 0){
 
 				printf("------------------------------------------------------------MATCH\n");
-				printf("comparing %u with %u (result: %i)\n", *((uint32_t*)ips + (i * 4)), ip, result);
+				printf("comparing %u with %u (result: %i)\n", *((uint32_t*)(ips + (i * 4))), ip, result);
 				printf("comparing ");
 				PrintIP((ips + (i * 4)));
 				printf(" with ");
@@ -116,8 +116,8 @@ int Blacklist::IsIn(uint32_t ip){
 				PrintIP((ips + (i * 4)));
 				printf(" with ");
 				PrintIP((unsigned char*)&ip);
-				printf("\n"); */
-			}
+				printf("\n"); */ 
+			}	
 		}
 	}
 
