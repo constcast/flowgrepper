@@ -125,7 +125,8 @@ Flow* MySQLFlowDB::getNextFlow()
 
 	std::cout << currentTableIndex << " " << tables.size() << std::endl;
 	std::cout << tables[currentTableIndex] << std::endl;
-        std::string query = "SELECT " + columnNames + " FROM " + tables[currentTableIndex] + " ORDER BY flowStartMilliSeconds";
+        //std::string query = "SELECT " + columnNames + " FROM " + tables[currentTableIndex] + " ORDER BY flowStartMilliSeconds";
+	std::string query = "SELECT " + columnNames + " FROM " + tables[currentTableIndex];
 	std::cout << query << std::endl;
 
         if(mysql_query(conn, query.c_str()) != 0) {

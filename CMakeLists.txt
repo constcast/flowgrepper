@@ -18,6 +18,8 @@ ADD_EXECUTABLE(flowgrepper
 	analyzerbase.cpp
 	onewayflowanalyzer.cpp
 	rrdvis.cpp
+	dnsbl.cpp
+	blacklist.cpp
 
 	reporterbase.cpp
 	reporterprinter.cpp
