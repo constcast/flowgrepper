@@ -19,6 +19,7 @@
 
 #include "onewayflowanalyzer.h"
 #include "rrdvis.h"
+#include "dnsbl.h"
 
 #include "reporterprinter.h"
 
@@ -28,7 +29,9 @@ AnalyzerBase* createAnalyzer(const std::string& name, const ConfigObject& config
 		return new OneWayFlowAnalyzer(configObject, reporter);
 	} else if (name == "rrdvisualizer") {
 		return new RRDVisAnalyzer(configObject, reporter);
-	} else {
+	} else if (name == "dnsblanalyzer") {
+		return new DNSblAnalyzer(configObject, reporter);
+	}else {
 		throw std::runtime_error("Error in createAnalyzer: Unknown analyzer module \"" + name + "\"!");
 	}
 
@@ -86,6 +89,7 @@ int main(int argc, char** argv)
 	// read and initialize modules
 	std::string moduleString = confObject.getConfString("main", "modules");
 
+	
 	std::istringstream iss(moduleString);
 	std::vector<std::string> modules;
 	std::copy(std::istream_iterator<std::string>(iss),
