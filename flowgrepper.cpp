@@ -125,6 +125,7 @@ int main(int argc, char** argv)
 		counter++;
 		if (counter % 100000 == 0) {
 			std::cout << "Analyzed " << counter << " flows ..." << std::endl;
+			//break;
 		}
 	}
 	std::cout << "Finished reading flows from db! Reporting!" << std::endl;
