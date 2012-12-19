@@ -74,4 +74,4 @@ ELSE (ORACLE_FOUND)
 	REMOVE_DEFINITIONS(-DORACLE_SUPPORT)
 ENDIF (ORACLE_FOUND)
 
-TARGET_LINK_LIBRARIES(flowgrepper "/usr/lib/librrd.so")
+TARGET_LINK_LIBRARIES(flowgrepper "/opt/data/software/lib/librrd.so")

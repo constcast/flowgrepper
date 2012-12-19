@@ -20,7 +20,7 @@ public:
 	
 	virtual void analyzeFlow(const Flow* flow);
 	virtual	void passResults();
-	virtual void nextTable();
+	virtual void nextTable(const std::string& tableName);
 
 	struct SubnetStats {
 		uint64_t in_bytes;

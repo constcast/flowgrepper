@@ -117,7 +117,7 @@ int main(int argc, char** argv)
 		}
 		for (size_t i = 0; i != analyzers.size(); ++i) {
 			if (flow->firstOfNewTable) {
-				analyzers[i]->nextTable();
+				analyzers[i]->nextTable(flow->tableName);
 			}
 			analyzers[i]->analyzeFlow(flow);
 		}

@@ -12,7 +12,7 @@ public:
 	AnalyzerBase(const ConfigObject& configObject, ReporterBase& reporter);
 	
 	virtual void analyzeFlow(const Flow* flow) = 0;
-	virtual void nextTable() {};
+	virtual void nextTable(const std::string& tableName) {};
 	virtual	void passResults() = 0;
 protected:
 	const ConfigObject& configObject;

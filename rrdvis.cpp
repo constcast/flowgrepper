@@ -306,7 +306,7 @@ void RRDVisAnalyzer::graphRRD(const std::string& graph_file, const std::string& 
 
 }
 
-void RRDVisAnalyzer::nextTable()
+void RRDVisAnalyzer::nextTable(const std::string& tableName)
 {
 	// nexttable pushes all information to the RRDs
 	// this is only done when a table is finished as we may only push 
@@ -405,7 +405,8 @@ void RRDVisAnalyzer::nextTable()
 
 void RRDVisAnalyzer::passResults()
 {
-	nextTable();
+	// create the graphs
+	nextTable("");
 }
 
 

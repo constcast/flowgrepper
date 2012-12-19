@@ -13,6 +13,7 @@ public:
 	
 	virtual void analyzeFlow(const Flow* flow);
 	virtual	void passResults();
+	virtual void nextTable(const std::string& tableName);
 
 	struct FlowCounters {
 		uint64_t biflows;

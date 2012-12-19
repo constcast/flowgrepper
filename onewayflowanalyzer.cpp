@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 
 #include <sstream>
+#include <iostream>
 
 #include "flow.h"
 #include "reporterbase.h"
@@ -64,3 +65,8 @@ void OneWayFlowAnalyzer::passResults()
 	}
 }
 
+void OneWayFlowAnalyzer::nextTable(const std::string& tableName)
+{
+	std::cout << "Results for " << tableName << std::endl;
+	passResults();
+}

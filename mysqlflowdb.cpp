@@ -70,6 +70,7 @@ Flow* MySQLFlowDB::createFlowFromRow(char** dbRow)
 	//std::cout << std::endl << "-------" << std::endl;
 	if (firstOfTable) {
 		result->firstOfNewTable = true;
+		result->tableName = tables[currentTableIndex];
 		firstOfTable = false;
 	} else {
 		result->firstOfNewTable = false;

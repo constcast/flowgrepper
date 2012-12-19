@@ -27,6 +27,10 @@ public:
 	uint64_t revBytes;
 
 	bool firstOfNewTable;
+
+	// if firstOfNewTable is true, then the new talble name
+	// is set to this variable
+	std::string tableName;
 };
 
 #endif
