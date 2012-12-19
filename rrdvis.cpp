@@ -5,6 +5,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 #include <sstream>
 #include <iostream>
@@ -411,8 +412,20 @@ void RRDVisAnalyzer::passResults()
 void RRDVisAnalyzer::initDatabases(uint64_t start)
 {
 	for (std::map<std::string, std::string>::iterator i = rrdDBMap.begin(); i != rrdDBMap.end(); ++i) {
+		// check if the rrd exists.
+		struct stat fbuf;
 		std::stringstream command;
-		command << rrdPath << " create " << rrdDbPath << "/" << i->second << " --start " << start - 60 << " --step=60 ";
+		command << rrdDbPath << "/" << i->second;
+		std::string rrdFilename = command.str();
+		command.str("");
+		if (stat(rrdFilename.c_str(), &fbuf) == 0) {
+			std::cout << "A file named " << rrdFilename << " already exists!" << std::endl;
+			std::cout << "Not creating new rrd database ..." << std::endl;
+			continue;
+		}
+
+
+		command << rrdPath << " create " << rrdFilename << " --start " << start - 60 << " --step=60 ";
 		// add datasources 
 		command << "DS:in_packets:ABSOLUTE:60:U:U ";
 		command << "DS:in_tcp_packets:ABSOLUTE:60:U:U ";
