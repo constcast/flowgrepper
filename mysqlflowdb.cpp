@@ -11,6 +11,11 @@
 MySQLFlowDB::MySQLFlowDB(const std::string& host, const uint16_t port, const std::string& username, const std::string& password)
 	: FlowDBBase(host, port, username, password), conn(NULL), dbResult(NULL), firstOfTable(true)
 {
+	flow = new Flow();
+}
+
+MySQLFlowDB::~MySQLFlowDB()
+{
 
 }
 
@@ -61,21 +66,19 @@ void MySQLFlowDB::getTableNames()
 
 Flow* MySQLFlowDB::createFlowFromRow(char** dbRow)
 {
-	Flow* result = new Flow();
-
 	for (size_t i = 0; i != columns.size(); ++i) {
 		//std::cout << "\t" <<  columns[i] << ": " << dbRow[i] << std::endl ;
-		result->setValue(columns[i], dbRow[i]);
+		flow->setValue(columns[i], dbRow[i]);
 	}
 	//std::cout << std::endl << "-------" << std::endl;
 	if (firstOfTable) {
-		result->firstOfNewTable = true;
+		flow->firstOfNewTable = true;
 		firstOfTable = false;
 	} else {
-		result->firstOfNewTable = false;
+		flow->firstOfNewTable = false;
 	}
 
-	return result;
+	return flow;
 	
 }
 

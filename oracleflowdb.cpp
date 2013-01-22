@@ -12,7 +12,12 @@
 OracleFlowDB::OracleFlowDB(const std::string& host, const uint16_t port, const std::string& username, const std::string& password)
 	: FlowDBBase(host, port, username, password), conn(NULL), env(NULL), statement(NULL), resultSet(NULL), firstOfTable(false)
 {
+	flow = new Flow()
+}
 
+OracleFlowDB::~OracleFlowDB()
+{
+	delete flow;
 }
 
 void OracleFlowDB::connect(const std::string& databaseName)

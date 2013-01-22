@@ -121,7 +121,6 @@ int main(int argc, char** argv)
 			}
 			analyzers[i]->analyzeFlow(flow);
 		}
-		delete flow;
 		counter++;
 		if (counter % 100000 == 0) {
 			std::cout << "Analyzed " << counter << " flows ..." << std::endl;
