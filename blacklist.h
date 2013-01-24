@@ -5,7 +5,11 @@
 #include <map>
 #include <stdint.h>
 
-enum Type {IP, NET, ONLINE};
+extern "C" {
+#include "longest-prefix/tree.h"
+}
+
+enum Type {IP, NET, ONLINE, LIST};
 
 class Blacklist
 {
@@ -16,7 +20,7 @@ public:
 	unsigned char* GetIPs();
 	void PrintIP(unsigned char*);
 	void PrintNet(unsigned char*);
-	int IsIn(uint32_t);
+	int IsIn(uint32_t, char**);
 
 private:
 	std::string listname;
@@ -25,6 +29,7 @@ private:
 	int elements;
 	unsigned char* ips;
 	
+	struct lpm_tree* tree;
 };
 
 #endif

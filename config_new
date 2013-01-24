@@ -1,0 +1,12 @@
+[main]
+dbtype=mysql
+host=127.0.0.1
+port=3306
+username=vermont
+password=writerwriterwriter
+modules=dnsblanalyzer
+database=flows
+
+[dnsblanalyzer]
+blacklists=/home/stauber/flowgrepper/flowgrepper/dnsbl/drop-spamhaus.txt 1 list /home/stauber/flowgrepper/flowgrepper/dnsbl/psbl.txt 1 list 
+

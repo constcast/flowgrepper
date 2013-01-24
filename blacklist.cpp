@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -17,12 +18,13 @@
 #include <netdb.h>
 
 Blacklist::Blacklist(const std::string path, unsigned int idx, Type t){
-
+	tree = lpm_init();
+	
 	type = t;
 	listname = path;
 	index = idx;
 
-	if(type != ONLINE){
+	if(type == LIST){
 		std::string  line;
 		std::ifstream stream;
 
@@ -35,42 +37,41 @@ Blacklist::Blacklist(const std::string path, unsigned int idx, Type t){
 
 		std::cout<< "Number of entries: " << elements <<", index: " << index << ", type: " << type << std::endl;
 	
-		int len;
-		if(type == IP) len = 4; 
-		if(type == NET) len = 5;
-
-		ips = (unsigned char*)malloc(elements * len);
-
 		stream.close();
 
 		stream.open(path.c_str());
 
-		int current = 0;
+		int mask;
+		std::string ipAddress;
+
 		while (std::getline(stream, line)){
 
-			//std::cout << "Read IP from blacklist: " << line << std::endl;
-
-			char trash[100];
-			char * p = new char[line.size() + 1];
-			std::copy(line.begin(), line.end(), p);
-			p[line.size()] = '\0';
-
-			if((index == 1) && (type == IP)){
-				sscanf (p, "%3hhu.%3hhu.%3hhu.%3hhu", ips + (current * 4) + 3, ips + (current * 4) + 2, ips + (current * 4) + 1, ips + (current * 4));
-			
+			size_t col = 0;
+			for(int i = 1; i < index; i++){
+				col = line.find(" ", col);
+				col++;
 			}
 
-			if((index == 2) && (type == IP)){
-				sscanf (p, "%s %3hhu.%3hhu.%3hhu.%3hhu", trash, ips + (current * 4) + 3, ips + (current * 4) + 2, ips + (current * 4) + 1, ips + (current * 4));
+			//int mask;
+			size_t pos = line.find("/", col); 
+			//std::string ipAddress;
+		
+			if (pos == std::string::npos) {
+				mask = 32;
+				size_t end = line.find(" ", col);
+				if(end > line.size()) end = line.size();
+				ipAddress = line.substr(col, end - col);	
+				//std::cout << " len: " << end << " " << col <<std::endl;
+			} else {
+				ipAddress = line.substr(col, pos - col);
+				//mask = atoi(line.substr(pos, line.size()).c_str());
+				size_t end = line.find(" ", col + 1);
+				mask = atoi(line.substr(pos + 1, (end - pos)).c_str());
 			}
-
-			if((index == 1) && (type == NET)){
-				sscanf (p, "%3hhu.%3hhu.%3hhu.%3hhu/%2hhu", ips + (current * 5) + 3, ips + (current * 5) + 2, ips + (current * 5) + 1, ips + (current * 5), ips + (current * 5) + 4);
-			}
-			delete p;
-			current++;
+			//std::cout << "ip:"<< ipAddress << " mask:" << mask << std::endl;
+			lpm_insert(tree, ipAddress.c_str(), mask);
 		}
-
+		std::cout << "Test format: ip:"<< ipAddress << " mask:" << mask << std::endl;
 		stream.close();
 	}
 }
@@ -83,73 +84,24 @@ int Blacklist::GetLength(){
 	return elements;
 }
 
-unsigned char* Blacklist::GetIPs(){
-	return ips;
-}
+int Blacklist::IsIn(uint32_t ip, char** out){ 
 
-int Blacklist::IsIn(uint32_t ip){ 
-	
-	int result;
+	if(type == LIST){
+		static char output[16];
 
-	if(type == IP){
+		lpm_lookup(tree, ip, output);
+		strncpy(*out, output, 16);
+		//std::cout << "Checking IP: " << ip << " result: "  << output << std::endl;
 
-		int i;
-		for(i = 0; i < elements; i++){
-			result = memcmp(ips + (i * 4), &ip, 4);
-	
-			if(result == 0){
-
-				printf("------------------------------------------------------------MATCH\n");
-				printf("comparing %u with %u (result: %i)\n", *((uint32_t*)(ips + (i * 4))), ip, result);
-				printf("comparing ");
-				PrintIP((ips + (i * 4)));
-				printf(" with ");
-				PrintIP((unsigned char*)&ip);
-				printf("\n"); 
-
-				return result;			
-			}
-			else{
-				/*printf("-----------------------------------------------------------------\n");
-				printf("comparing %u with %u (result: %i)\n", *((uint32_t*)ips + (i * 4)), ip, result);
-				printf("comparing ");
-				PrintIP((ips + (i * 4)));
-				printf(" with ");
-				PrintIP((unsigned char*)&ip);
-				printf("\n"); */ 
-			}	
+		if (strncmp(output, "NF", 3) == 0) {
+			//std::cerr << " found" << ip <<"\t"  << output << std::endl;
+			return 1;
+		} else {
+			//std::cerr << "found" << std::endl;
+			//std::cerr << output <<"\t"  << "NF" << std::endl;
+			return 0;
 		}
 	}
-
-	if(type == NET){
-		
-		int i;
-		for(i = 0; i < elements; i++){
-			unsigned char* netmask = ips + (i * 5) + 4;
-
-			uint32_t prep_ip = (uint32_t) ip & (uint32_t)(pow(2, 32) - (pow(2, 32 - *netmask))); 
-			result = memcmp(ips + (i * 5), &prep_ip, 4);
-
-
-			
-		
-			if(result == 0){
-				printf("-----------------------------------------------------------------match\n");
-				printf("comparing %u with %u (result: %i)\n", *((uint32_t*)ips + (i * 5)), prep_ip, result);
-				printf("comparing ");
-				PrintNet((ips + (i * 5)));
-				printf(" with ");
-				PrintIP((unsigned char*)&prep_ip);
-				printf(" (");
-				PrintIP((unsigned char*)&ip);
-				printf(")\n");
-				
-				return result;
-
-			}
-		}
-	}
-
 	if(type == ONLINE){
 
 		char query[150];
@@ -169,11 +121,10 @@ int Blacklist::IsIn(uint32_t ip){
 				printf("%s ", inet_ntoa(*(struct in_addr*)(he->h_addr_list[i])));
 				i++;
 
-				if(inet_ntoa(*(struct in_addr*)(he->h_addr_list[i])) != "127.0.0.2") return 0;
+				if(std::string(inet_ntoa(*(struct in_addr*)(he->h_addr_list[i]))) != std::string("127.0.0.2")) return 1;
 			}
 		}
 	}
-
 	return -1;
 }
 

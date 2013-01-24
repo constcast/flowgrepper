@@ -133,7 +133,8 @@ Flow* MySQLFlowDB::getNextFlow()
                 throw std::runtime_error("Error running query on table " + tables[currentTableIndex] + ": " +  std::string(mysql_error(conn)));
         }
 
-        dbResult = mysql_store_result(conn);
+        //dbResult = mysql_store_result(conn);
+        dbResult = mysql_use_result(conn);
 	if (dbResult == 0) {
 		// some kind of error? 
 		throw std::runtime_error("Error storing query result for table " + tables[currentTableIndex] + ": " + std::string(mysql_error(conn)));

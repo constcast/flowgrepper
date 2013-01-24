@@ -1,0 +1,16 @@
+[main]
+dbtype=mysql
+host=127.0.0.1
+port=3306
+username=vermont
+password=writerwriterwriter
+modules=portscananalyzer
+database=flows
+
+[portscananalyzer]
+bucketsize_minutes=5
+min_scans_per_minute=30
+separat_sourceport=1
+highport_sourceport=1024
+max_out_packets=3
+protocol_number=6

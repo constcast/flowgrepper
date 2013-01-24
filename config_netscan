@@ -1,0 +1,12 @@
+[main]
+dbtype=mysql
+host=127.0.0.1
+port=3306
+username=vermont
+password=writerwriterwriter
+modules=netscananalyzer
+database=flows
+
+[netscananalyzer]
+bucketsize_minutes=5
+min_scans_per_minute=10

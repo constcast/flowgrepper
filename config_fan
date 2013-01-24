@@ -1,0 +1,14 @@
+[main]
+dbtype=mysql
+host=127.0.0.1
+port=3306
+username=vermont
+password=writerwriterwriter
+modules=fananalyzer
+database=flows
+
+[fananalyzer]
+bucketsize_minutes=5
+min_fanout=0
+min_fanin=0
+protocol=6

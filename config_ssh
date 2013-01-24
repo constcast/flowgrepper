@@ -1,0 +1,14 @@
+[main]
+dbtype=mysql
+host=127.0.0.1
+port=3306
+username=vermont
+password=writerwriterwriter
+modules=sshscananalyzer
+database=flows
+
+[sshscananalyzer]
+bucketsize_minutes=5
+min_scans_per_minute=1
+min_packets=12
+max_packets=22

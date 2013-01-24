@@ -20,6 +20,10 @@
 #include "onewayflowanalyzer.h"
 #include "rrdvis.h"
 #include "dnsbl.h"
+#include "netscan.h"
+#include "portscan.h"
+#include "fan.h"
+#include "sshscan.h"
 
 #include "reporterprinter.h"
 
@@ -31,7 +35,15 @@ AnalyzerBase* createAnalyzer(const std::string& name, const ConfigObject& config
 		return new RRDVisAnalyzer(configObject, reporter);
 	} else if (name == "dnsblanalyzer") {
 		return new DNSblAnalyzer(configObject, reporter);
-	}else {
+	} else if (name == "netscananalyzer") {
+		return new NetscanAnalyzer(configObject, reporter);
+	} else if (name == "portscananalyzer") {
+		return new PortscanAnalyzer(configObject, reporter);
+	} else if (name == "fananalyzer") {
+		return new FanAnalyzer(configObject, reporter);
+	} else if (name == "sshscananalyzer") {
+		return new SSHscanAnalyzer(configObject, reporter);
+	} else {
 		throw std::runtime_error("Error in createAnalyzer: Unknown analyzer module \"" + name + "\"!");
 	}
 

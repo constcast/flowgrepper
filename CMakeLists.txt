@@ -9,6 +9,7 @@ ADD_EXECUTABLE(flowgrepper
 	configobject.cpp
 	flow.cpp
 	iniparser.c
+	longest-prefix/tree.c
 	
 
 	flowdb.cpp
@@ -20,6 +21,10 @@ ADD_EXECUTABLE(flowgrepper
 	rrdvis.cpp
 	dnsbl.cpp
 	blacklist.cpp
+	netscan.cpp
+	portscan.cpp
+	fan.cpp
+	sshscan.cpp
 
 	reporterbase.cpp
 	reporterprinter.cpp
