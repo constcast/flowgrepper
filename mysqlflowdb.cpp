@@ -125,7 +125,7 @@ Flow* MySQLFlowDB::getNextFlow()
 
 	std::cout << currentTableIndex << " " << tables.size() << std::endl;
 	std::cout << tables[currentTableIndex] << std::endl;
-        //std::string query = "SELECT " + columnNames + " FROM " + tables[currentTableIndex] + " ORDER BY flowStartMilliSeconds";
+        //std::string query = "SELECT " + columnNames + " FROM " + tables[currentTableIndex] + "ORDER BY flowStartMilliSeconds";
 	std::string query = "SELECT " + columnNames + " FROM " + tables[currentTableIndex];
 	std::cout << query << std::endl;
 
@@ -134,7 +134,7 @@ Flow* MySQLFlowDB::getNextFlow()
         }
 
         //dbResult = mysql_store_result(conn);
-        dbResult = mysql_use_result(conn);
+        dbResult = mysql_store_result(conn);
 	if (dbResult == 0) {
 		// some kind of error? 
 		throw std::runtime_error("Error storing query result for table " + tables[currentTableIndex] + ": " + std::string(mysql_error(conn)));
