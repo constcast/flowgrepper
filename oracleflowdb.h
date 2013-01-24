@@ -15,6 +15,7 @@ class OracleFlowDB : public FlowDBBase
 {
 public:
 	OracleFlowDB(const std::string& host, const uint16_t port, const std::string& username, const std::string& password);
+	~OracleFlowDB();
 
 	virtual Flow* getNextFlow();
 	virtual void connect(const std::string& databaseName);
@@ -30,6 +31,8 @@ private:
 	oracle::occi::Statement *statement;
 	oracle::occi::ResultSet *resultSet;
 	
+	bool firstOfTable;
+	Flow* flow;
 };
 
 #endif

@@ -5,7 +5,7 @@
 #include <iostream>
 
 Flow::Flow(uint32_t srcIP, uint32_t dstIP, uint16_t srcPort, uint16_t dstPort, uint8_t proto, uint64_t flowStart, uint64_t flowEnd, uint64_t packets, uint64_t bytes, uint64_t revFlowStart, uint64_t revFlowEnd, uint64_t revPackets, uint64_t revBytes)
-	: srcIP(srcIP), dstIP(dstIP), srcPort(srcPort), dstPort(dstPort), proto(proto), flowStart(flowStart), flowEnd(flowEnd), packets(packets), bytes(bytes), revFlowStart(revFlowStart), revFlowEnd(revFlowEnd), revPackets(revPackets), revBytes(revBytes)
+	: srcIP(srcIP), dstIP(dstIP), srcPort(srcPort), dstPort(dstPort), proto(proto), flowStart(flowStart), flowEnd(flowEnd), packets(packets), bytes(bytes), revFlowStart(revFlowStart), revFlowEnd(revFlowEnd), revPackets(revPackets), revBytes(revBytes), firstOfNewTable(false)
 {
 
 }

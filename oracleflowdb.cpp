@@ -10,9 +10,14 @@
 #include "flow.h"
 
 OracleFlowDB::OracleFlowDB(const std::string& host, const uint16_t port, const std::string& username, const std::string& password)
-	: FlowDBBase(host, port, username, password), conn(NULL), env(NULL), statement(NULL), resultSet(NULL)
+	: FlowDBBase(host, port, username, password), conn(NULL), env(NULL), statement(NULL), resultSet(NULL), firstOfTable(false)
 {
+	flow = new Flow()
+}
 
+OracleFlowDB::~OracleFlowDB()
+{
+	delete flow;
 }
 
 void OracleFlowDB::connect(const std::string& databaseName)
@@ -93,6 +98,13 @@ Flow* OracleFlowDB::createFlowFromRow()
 		result->setValue(columns[i], resultSet->getString(i + 1).c_str());
 	}
 	//std::cout << std::endl << "-------" << std::endl;
+	if (firstOfTable) {
+		result->firstOfNewTable = true;
+		firstOfTable = false;
+	} else {
+		result->firstOfNewTable = false;
+	}
+
 
 	return result;
 	
@@ -165,6 +177,8 @@ Flow* OracleFlowDB::getNextFlow()
 	}
 
 	fillColumns(tables[currentTableIndex]);
+
+	firstOfTable = true;
 
 	std::cout << currentTableIndex << " " << tables.size() << std::endl;
 	std::cout << tables[currentTableIndex] << std::endl;

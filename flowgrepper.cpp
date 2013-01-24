@@ -101,7 +101,6 @@ int main(int argc, char** argv)
 	// read and initialize modules
 	std::string moduleString = confObject.getConfString("main", "modules");
 
-	
 	std::istringstream iss(moduleString);
 	std::vector<std::string> modules;
 	std::copy(std::istream_iterator<std::string>(iss),
@@ -132,12 +131,15 @@ int main(int argc, char** argv)
 			std::cout << "Received first flow from db ..." << std::endl;
 		}
 		for (size_t i = 0; i != analyzers.size(); ++i) {
+			if (flow->firstOfNewTable) {
+				analyzers[i]->nextTable();
+			}
 			analyzers[i]->analyzeFlow(flow);
 		}
-		delete flow;
 		counter++;
 		if (counter % 100000 == 0) {
 			std::cout << "Analyzed " << counter << " flows ..." << std::endl;
+			//break;
 		}
 	}
 	std::cout << "Finished reading flows from db! Reporting!" << std::endl;

@@ -15,6 +15,7 @@ class MySQLFlowDB : public FlowDBBase
 {
 public:
 	MySQLFlowDB(const std::string& host, const uint16_t port, const std::string& username, const std::string& password);
+	~MySQLFlowDB();
 
 	virtual Flow* getNextFlow();
 	virtual void connect(const std::string& databaseName);
@@ -26,6 +27,10 @@ private:
 
 	MYSQL* conn;
 	MYSQL_RES* dbResult;
+	bool firstOfTable;
+
+	Flow* flow;
+
 };
 
 #endif
